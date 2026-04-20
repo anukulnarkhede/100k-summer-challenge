@@ -348,7 +348,7 @@
                         }
                     } catch(e) {
                         console.error("Profile Fetch Error:", e);
-                        alert("Could not load your Google profile data.");
+                        alert("Database Error: " + e.message + "\n\nMake sure your Firestore Database is created in your Firebase Console and rules are set to allow read/write access.");
                     } finally {
                         document.getElementById('loading-overlay').classList.add('hidden');
                     }
@@ -420,7 +420,8 @@
                     showDashboard(); 
                 }
             } catch (error) {
-                alert("Failed to create anonymous account. Ensure domain is authorized.");
+                console.error("Auth Error:", error);
+                alert("Authentication Failed: " + error.message + "\n\nEnsure Anonymous Auth is enabled in Firebase and your domain is authorized.");
             } finally {
                 document.getElementById('loading-overlay').classList.add('hidden');
             }
@@ -446,7 +447,8 @@
                         alert("Sync Code not found. Please verify.");
                     }
                 } catch(e) {
-                    alert("Error restoring data.");
+                    console.error("Restore Error:", e);
+                    alert("Database Error: " + e.message + "\n\nMake sure your Firestore Database is created and rules allow read/write access.");
                 } finally {
                     document.getElementById('loading-overlay').classList.add('hidden');
                 }
