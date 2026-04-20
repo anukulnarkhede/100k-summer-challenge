@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100K Summer Challenge Tracker</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTML2PDF Library for Report Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" xintegrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        /* Custom scrollbar for the PoW logs */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b; 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155; 
+        }
+        /* Smooth transition for progress bars */
+        .progress-bar-transition {
+            transition: width 0.5s ease-in-out;
+        }
+        /* Hide elements when generating PDF */
+        .exporting .no-print {
+            display: none !important;
+        }
+        .exporting .expand-print {
+            max-height: none !important;
+            overflow: visible !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 font-sans min-h-screen selection:bg-emerald-500/30 selection:text-emerald-200">
+
+    <!-- ==================== OATH SCREEN ==================== -->
+    <div id="oath-screen" class="hidden min-h-screen flex-col items-center justify-center p-6">
+        <div class="max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-cyan-500"></div>
+            
+            <div class="flex justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+            </div>
+            
+            <h1 class="text-3xl md:text-4xl font-bold text-white text-center mb-6 tracking-tight">
+                The 100K Summer Pledge
+            </h1>
+            
+            <div class="space-y-4 text-slate-400 text-lg mb-8 bg-slate-950 p-6 rounded-xl border border-slate-800/50">
+                <p>I commit to the 100K Summer Challenge.</p>
+                <p>For the next 100 days, I refuse to be just a consumer of information; I will be a builder of value. I understand that theory is cheap, and execution is the only metric that matters.</p>
+                <ul class="list-none space-y-3 mt-4 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <svg class="w-6 h-6 text-emerald-500 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        I swear to treat my AI tools not as shortcuts, but as my co-founders.
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <svg class="w-6 h-6 text-emerald-500 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        I swear to value market feedback over my own assumptions.
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <svg class="w-6 h-6 text-emerald-500 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        I swear to embrace rejection as data, not defeat.
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <svg class="w-6 h-6 text-emerald-500 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        I swear to prioritize daily momentum over perfect planning.
+                    </li>
+                </ul>
+                <p class="mt-4 text-emerald-400 font-semibold italic">"I will not let the summer pass as a vacation. I will use it as a launchpad. I am going all in."</p>
+            </div>
+
+            <form id="oath-form" class="space-y-4">
+                <div>
+                    <label for="founder-name" class="block text-sm font-medium text-slate-400 mb-2">Sign your name (Founder Profile)</label>
+                    <input type="text" id="founder-name" required placeholder="Enter your full name..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-4 focus:outline-none focus:border-emerald-500 text-white text-lg">
+                </div>
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xl py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+                    I Accept The Challenge
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== DASHBOARD SCREEN ==================== -->
+    <div id="dashboard-screen" class="hidden p-4 md:p-8">
+        <div id="export-container" class="max-w-6xl mx-auto space-y-8 pb-10">
+            
+            <!-- Header -->
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900 p-6 rounded-2xl border border-slate-800 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-emerald-500 to-cyan-500"></div>
+                <div>
+                    <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 3.86-8.99c.39-.46 1.05-.5 1.5-.1.45.41.41 1.06-.05 1.48a19 19 0 0 0-3.3 3.6"></path><path d="m15 12 3 3a19 19 0 0 1-3.6 3.3c-.42.46-1.07.5-1.48.05-.4-.45-.36-1.11.1-1.5a22 22 0 0 0 8.99-3.86z"></path><path d="M9 10.5 12 15l1.5-1.5L9 10.5z"></path></svg>
+                        100K Summer Execution Engine
+                    </h1>
+                    <p class="text-slate-400 mt-1 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        Founder: <span id="display-name" class="font-semibold text-slate-200"></span> • Day <span id="challenge-day" class="text-emerald-400 font-bold">1</span> of 100
+                    </p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="bg-slate-950 border border-slate-800 px-4 py-2 rounded-lg text-center">
+                        <span class="block text-xs text-slate-500 uppercase font-bold tracking-wider">Active Streak</span>
+                        <span class="text-xl font-bold text-orange-400 flex items-center gap-1 justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c-1.28 0-2.5-1.22-2.5-2.5C8.5 7 11 5 11 5s2 1.5 2 4.5c0 1.28-1.22 2.5-2.5 2.5A2.5 2.5 0 0 0 13 14.5c1.38 0 2.5-1.12 2.5-2.5 0-3-2-4.5-2-4.5s2 1.5 2 4.5a5 5 0 0 1-10 0c0-3 2-4.5 2-4.5s-2 1.5-2 4.5A2.5 2.5 0 0 0 8.5 14.5z"></path></svg> 
+                            <span id="streak-counter">0</span> Days
+                        </span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Funnel Metrics Grid (Nuanced Tracking) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                
+                <!-- Pitches Sent -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+                    <h2 class="text-sm font-bold text-slate-400 flex items-center gap-2 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        Outreach / Pitches
+                    </h2>
+                    <div class="flex justify-between items-end mb-4">
+                        <span class="text-3xl font-bold text-blue-400" id="pitches-display">0</span>
+                    </div>
+                    <button id="add-pitch-btn" class="no-print w-full bg-slate-950 hover:bg-blue-900/30 text-blue-400 border border-slate-800 hover:border-blue-500/50 text-sm font-medium py-2 rounded-lg transition-all">
+                        +1 Pitch Sent
+                    </button>
+                </div>
+
+                <!-- Meetings Booked -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+                    <h2 class="text-sm font-bold text-slate-400 flex items-center gap-2 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        Meetings Booked
+                    </h2>
+                    <div class="flex justify-between items-end mb-4">
+                        <span class="text-3xl font-bold text-purple-400" id="meetings-display">0</span>
+                    </div>
+                    <button id="add-meeting-btn" class="no-print w-full bg-slate-950 hover:bg-purple-900/30 text-purple-400 border border-slate-800 hover:border-purple-500/50 text-sm font-medium py-2 rounded-lg transition-all">
+                        +1 Meeting
+                    </button>
+                </div>
+
+                <!-- Rejections -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h2 class="text-sm font-bold text-slate-400 flex items-center gap-2 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-400"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                            Rejections (Race to 50)
+                        </h2>
+                        <div class="flex justify-between items-end mb-4">
+                            <span class="text-3xl font-bold text-red-400"><span id="rejections-display">0</span><span class="text-lg text-slate-600">/50</span></span>
+                        </div>
+                        <button id="add-rejection-btn" class="no-print w-full bg-slate-950 hover:bg-red-900/30 text-red-400 border border-slate-800 hover:border-red-500/50 text-sm font-medium py-2 rounded-lg transition-all">
+                            +1 Rejection
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Revenue Generated -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+                    <h2 class="text-sm font-bold text-slate-400 flex items-center gap-2 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                        Revenue (₹1L Goal)
+                    </h2>
+                    <div class="flex justify-between items-end mb-4">
+                        <span class="text-3xl font-bold text-emerald-400" id="revenue-display">₹0</span>
+                    </div>
+                    <form id="revenue-form" class="no-print flex gap-2">
+                        <input type="number" id="revenue-input" placeholder="₹ Add" class="bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 w-full focus:outline-none focus:border-emerald-500 text-white text-sm" required>
+                        <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-3 py-2 rounded-lg font-bold transition-colors">
+                            +
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Task Manager (Daily Action Plan) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        Daily Action Plan
+                    </h2>
+                    <span class="text-sm text-slate-500">Check off tasks to maintain momentum</span>
+                </div>
+                
+                <form id="task-form" class="no-print flex gap-2 mb-6">
+                    <input type="text" id="task-input" placeholder="What needs to be executed today?" class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 flex-1 focus:outline-none focus:border-indigo-500 text-white" required>
+                    <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-slate-950 px-6 py-3 rounded-xl font-bold transition-colors">
+                        Add Task
+                    </button>
+                </form>
+
+                <div id="tasks-container" class="space-y-3">
+                    <!-- Tasks injected via JS -->
+                </div>
+            </div>
+
+            <!-- Bottom Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Milestones / Roadmap -->
+                <div class="lg:col-span-1 bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                            Milestone Roadmap
+                        </h2>
+                    </div>
+                    
+                    <div class="space-y-6" id="milestones-container">
+                        <!-- Milestones injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Daily Proof of Work (PoW) -->
+                <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col expand-print" style="max-height: 600px;">
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                        Daily Proof of Work (PoW)
+                    </h2>
+                    <p class="text-sm text-slate-400 mb-6">Log your ONE high-leverage execution task for today to maintain your streak.</p>
+                    
+                    <form id="pow-form" class="no-print mb-8">
+                        <div class="flex gap-2">
+                            <input type="text" id="pow-input" placeholder="e.g., Scraped 150 leads and sent 20 cold emails..." class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 flex-1 focus:outline-none focus:border-emerald-500 text-white" required>
+                            <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-6 py-3 rounded-xl font-bold transition-colors flex items-center gap-2">
+                                Submit 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="flex-1 flex flex-col min-h-0 expand-print">
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 border-b border-slate-800 pb-2">Recent Execution Log</h3>
+                        
+                        <div id="pow-logs-container" class="flex-1 overflow-y-auto space-y-3 pr-2 expand-print">
+                            <!-- Logs injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions & Danger Zone -->
+            <div class="no-print pt-8 mt-4 border-t border-slate-800/50 flex justify-between items-center">
+                <button id="download-pdf-btn" class="bg-slate-800 hover:bg-emerald-900/50 text-emerald-400 border border-slate-700 hover:border-emerald-500/50 font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Download PDF Report
+                </button>
+
+                <button id="reset-data-btn" class="text-slate-500 hover:text-red-500 text-sm flex items-center gap-1 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                    Reset All Data
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // Default Initial State
+        const INITIAL_STATE = {
+            hasSigned: false,
+            founderName: '',
+            startDate: null,
+            lastActiveDate: null,
+            revenue: 0,
+            rejections: 0,
+            pitches: 0,
+            meetings: 0,
+            streak: 0,
+            tasks: [],
+            powLogs: [],
+            milestones: [
+                { id: 1, phase: 'Phase 1: The Runway', text: 'Define Niche & Target Audience', done: false },
+                { id: 2, phase: 'Phase 1: The Runway', text: 'Set up AI Workflows / Prompts', done: false },
+                { id: 3, phase: 'Phase 1: The Runway', text: 'Build Minimum Viable Product (MVP)', done: false },
+                { id: 4, phase: 'Phase 1: The Runway', text: 'Scrape/Build 500+ Prospect List', done: false },
+                { id: 5, phase: 'Phase 2: The Sprint', text: 'Send First 50 Cold Emails/DMs', done: false },
+                { id: 6, phase: 'Phase 2: The Sprint', text: 'Close First Client / First ₹10k', done: false },
+                { id: 7, phase: 'Phase 2: The Sprint', text: 'Deliver Service & Get Testimonial', done: false },
+                { id: 8, phase: 'Phase 2: The Sprint', text: 'Hit ₹1,00,000 Revenue Goal', done: false },
+            ]
+        };
+
+        const GOAL_REVENUE = 100000;
+        const GOAL_REJECTIONS = 50;
+
+        // State Management
+        let appState = JSON.parse(JSON.stringify(INITIAL_STATE));
+
+        function loadState() {
+            const saved = localStorage.getItem('100k_challenge_state');
+            if (saved) {
+                appState = JSON.parse(saved);
+                if(appState.pitches === undefined) appState.pitches = 0;
+                if(appState.meetings === undefined) appState.meetings = 0;
+                if(appState.tasks === undefined) appState.tasks = [];
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('100k_challenge_state', JSON.stringify(appState));
+        }
+
+        // DOM Elements
+        const oathScreen = document.getElementById('oath-screen');
+        const dashboardScreen = document.getElementById('dashboard-screen');
+        
+        // --- Initialization & Routing ---
+        function init() {
+            loadState();
+            if (!appState.hasSigned) {
+                oathScreen.classList.remove('hidden');
+                oathScreen.classList.add('flex');
+                dashboardScreen.classList.add('hidden');
+            } else {
+                oathScreen.classList.add('hidden');
+                oathScreen.classList.remove('flex');
+                dashboardScreen.classList.remove('hidden');
+                updateDashboardUI();
+            }
+        }
+
+        // --- Robust Streak & Activity Engine ---
+        function registerActivity() {
+            const today = new Date().toDateString();
+            
+            if (!appState.lastActiveDate) {
+                appState.streak = 1;
+                appState.lastActiveDate = today;
+            } else if (appState.lastActiveDate !== today) {
+                const lastDate = new Date(appState.lastActiveDate);
+                const currDate = new Date(today);
+                const diffDays = Math.round(Math.abs((currDate - lastDate) / (1000 * 60 * 60 * 24)));
+                
+                if (diffDays === 1) {
+                    appState.streak += 1; // Consecutive day
+                } else if (diffDays > 1) {
+                    appState.streak = 1;  // Broken streak, start over
+                }
+                appState.lastActiveDate = today;
+            }
+            saveState();
+            updateStreakUI();
+        }
+
+        // --- Event Listeners ---
+
+        // 1. Sign Oath
+        document.getElementById('oath-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('founder-name').value.trim();
+            if (nameInput) {
+                appState.founderName = nameInput;
+                appState.hasSigned = true;
+                appState.startDate = new Date().toDateString();
+                saveState();
+                init(); 
+            }
+        });
+
+        // 2. Metrics Tracking
+        document.getElementById('revenue-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('revenue-input');
+            const amount = parseInt(input.value);
+            if (!isNaN(amount) && amount > 0) {
+                appState.revenue += amount;
+                registerActivity(); 
+                input.value = '';
+                updateFunnelUI();
+            }
+        });
+
+        document.getElementById('add-pitch-btn').addEventListener('click', () => {
+            appState.pitches += 1;
+            registerActivity();
+            updateFunnelUI();
+        });
+
+        document.getElementById('add-meeting-btn').addEventListener('click', () => {
+            appState.meetings += 1;
+            registerActivity();
+            updateFunnelUI();
+        });
+
+        document.getElementById('add-rejection-btn').addEventListener('click', () => {
+            appState.rejections += 1;
+            registerActivity();
+            updateFunnelUI();
+        });
+
+        // 3. Task Manager
+        document.getElementById('task-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('task-input');
+            const text = input.value.trim();
+            
+            if (text) {
+                appState.tasks.push({
+                    id: Date.now(),
+                    text: text,
+                    done: false
+                });
+                saveState();
+                input.value = '';
+                updateTasksUI();
+            }
+        });
+
+        window.toggleTask = function(id) {
+            const task = appState.tasks.find(t => t.id === id);
+            if (task) {
+                task.done = !task.done;
+                if (task.done) registerActivity(); 
+                saveState();
+                updateTasksUI();
+            }
+        }
+
+        window.deleteTask = function(id) {
+            appState.tasks = appState.tasks.filter(t => t.id !== id);
+            saveState();
+            updateTasksUI();
+        }
+
+        // 4. Log Proof of Work (PoW)
+        document.getElementById('pow-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('pow-input');
+            const text = input.value.trim();
+            
+            if (text) {
+                const newLog = {
+                    id: Date.now(),
+                    text: text,
+                    date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' })
+                };
+                
+                appState.powLogs.unshift(newLog); 
+                registerActivity(); 
+                input.value = '';
+                updatePowUI();
+            }
+        });
+
+        // 5. Reset Data (Fixed to ensure it correctly wipes and restarts)
+        document.getElementById('reset-data-btn').addEventListener('click', () => {
+            if(confirm("DANGER: Are you sure you want to reset all your progress? This cannot be undone.")) {
+                localStorage.removeItem('100k_challenge_state');
+                appState = JSON.parse(JSON.stringify(INITIAL_STATE));
+                location.reload(); // Hard reload clears memory and triggers re-render via init()
+            }
+        });
+
+        // 6. Download PDF Report 
+        document.getElementById('download-pdf-btn').addEventListener('click', () => {
+            const container = document.getElementById('export-container');
+            
+            // Add a class to hide forms/buttons and expand scrollable areas specifically for PDF rendering
+            container.classList.add('exporting');
+            
+            const originalName = appState.founderName || "Founder";
+            const safeName = originalName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            
+            const opt = {
+                margin:       [0.5, 0.5, 0.5, 0.5], // top, left, bottom, right
+                filename:     `100k_challenge_${safeName}_report.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false, backgroundColor: '#020617' }, // match slate-950
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Generate the PDF
+            html2pdf().set(opt).from(container).save().then(() => {
+                // Restore the UI back to normal mode
+                container.classList.remove('exporting');
+            }).catch(err => {
+                console.error('PDF Generation Error:', err);
+                container.classList.remove('exporting');
+                alert('Something went wrong while generating the PDF.');
+            });
+        });
+
+        // --- UI Updaters ---
+
+        function updateDashboardUI() {
+            document.getElementById('display-name').textContent = appState.founderName;
+            
+            if (appState.startDate) {
+                const start = new Date(appState.startDate);
+                const current = new Date();
+                const diffDays = Math.floor((current - start) / (1000 * 60 * 60 * 24));
+                document.getElementById('challenge-day').textContent = Math.max(1, diffDays + 1);
+            }
+
+            updateStreakUI();
+            updateFunnelUI();
+            updateTasksUI();
+            updateMilestonesUI();
+            updatePowUI();
+        }
+
+        function updateStreakUI() {
+            const today = new Date().toDateString();
+            if (appState.lastActiveDate && appState.lastActiveDate !== today) {
+                const lastDate = new Date(appState.lastActiveDate);
+                const currDate = new Date(today);
+                const diffDays = Math.round(Math.abs((currDate - lastDate) / (1000 * 60 * 60 * 24)));
+                if (diffDays > 1) {
+                    appState.streak = 0; 
+                }
+            }
+            document.getElementById('streak-counter').textContent = appState.streak;
+        }
+
+        function updateFunnelUI() {
+            document.getElementById('pitches-display').textContent = appState.pitches;
+            document.getElementById('meetings-display').textContent = appState.meetings;
+            document.getElementById('rejections-display').textContent = appState.rejections;
+            
+            let amountStr = appState.revenue >= 100000 ? `1L+` : appState.revenue.toLocaleString('en-IN');
+            document.getElementById('revenue-display').textContent = `₹${amountStr}`;
+        }
+
+        function updateTasksUI() {
+            const container = document.getElementById('tasks-container');
+            if (appState.tasks.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 text-sm italic text-center py-4">No tasks added yet. Plan your execution.</p>`;
+                return;
+            }
+
+            container.innerHTML = appState.tasks.map(task => `
+                <div class="flex items-center justify-between p-3 bg-slate-950 border ${task.done ? 'border-indigo-900/50 bg-indigo-950/10' : 'border-slate-800'} rounded-lg transition-all">
+                    <div class="flex items-center gap-3 flex-1 cursor-pointer" onclick="toggleTask(${task.id})">
+                        <div class="w-5 h-5 rounded border ${task.done ? 'bg-indigo-500 border-indigo-500 flex items-center justify-center' : 'border-slate-600'}">
+                            ${task.done ? `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#020617" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>` : ''}
+                        </div>
+                        <span class="${task.done ? 'text-slate-500 line-through' : 'text-slate-200'} select-none flex-1">${escapeHTML(task.text)}</span>
+                    </div>
+                    <button onclick="deleteTask(${task.id})" class="no-print text-slate-600 hover:text-red-400 p-1 ml-2 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function updatePowUI() {
+            const container = document.getElementById('pow-logs-container');
+            if (appState.powLogs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-slate-600 py-8 flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-2 opacity-50"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                        <p>No execution logged yet. The clock is ticking.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = appState.powLogs.map(log => `
+                <div class="bg-slate-950 rounded-lg p-4 border border-slate-800/50 flex gap-4 break-inside-avoid">
+                    <div class="pt-1">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-200">${escapeHTML(log.text)}</p>
+                        <p class="text-xs text-slate-500 mt-1">${log.date}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateMilestonesUI() {
+            const container = document.getElementById('milestones-container');
+            const phases = ['Phase 1: The Runway', 'Phase 2: The Sprint'];
+            
+            let htmlString = '';
+
+            phases.forEach(phase => {
+                const phaseMilestones = appState.milestones.filter(m => m.phase === phase);
+                if(phaseMilestones.length === 0) return;
+
+                htmlString += `
+                    <div class="break-inside-avoid">
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">${phase}</h3>
+                        <div class="space-y-2">
+                            ${phaseMilestones.map(milestone => {
+                                const bgClass = milestone.done ? 'bg-emerald-950/30 border-emerald-900/50 text-slate-400' : 'bg-slate-950 border-slate-800 text-slate-200 hover:border-slate-700';
+                                const iconSvg = milestone.done 
+                                    ? `<svg class="w-5 h-5 text-emerald-500 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
+                                    : `<svg class="w-5 h-5 text-slate-600 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>`;
+                                const textClass = milestone.done ? 'line-through opacity-70' : '';
+
+                                return `
+                                    <div onclick="toggleMilestone(${milestone.id})" class="flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all select-none ${bgClass}">
+                                        ${iconSvg}
+                                        <span class="text-sm ${textClass}">${milestone.text}</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = htmlString;
+        }
+
+        window.toggleMilestone = function(id) {
+            appState.milestones = appState.milestones.map(m => 
+                m.id === id ? { ...m, done: !m.done } : m
+            );
+            saveState();
+            updateMilestonesUI();
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag])
+            );
+        }
+
+        init();
+    </script>
+</body>
+</html>
